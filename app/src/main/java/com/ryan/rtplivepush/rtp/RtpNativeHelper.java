@@ -2,6 +2,7 @@ package com.ryan.rtplivepush.rtp;
 
 public class RtpNativeHelper {
 
+    // Used to load the 'native-lib' library on application startup.
     static {
         System.loadLibrary("native-lib");
     }
