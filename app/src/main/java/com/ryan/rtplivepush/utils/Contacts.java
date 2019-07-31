@@ -8,7 +8,7 @@ public class Contacts {
 
     public static final String CAMERA_HEIGHT = "cameraHeight";
 
-    public static final String CAMERA_Morientation = "cameraMorientation";
+    public static final String CAMERA_ORIENTATION = "cameraOrientation";
 
     public static final String SCALE_WIDTH = "scaleWidth";
 

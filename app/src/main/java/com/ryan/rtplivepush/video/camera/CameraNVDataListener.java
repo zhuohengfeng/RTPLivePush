@@ -1,4 +1,4 @@
-package com.ryan.rtplivepush.camera.listener;
+package com.ryan.rtplivepush.video.camera;
 
 public interface CameraNVDataListener {
 

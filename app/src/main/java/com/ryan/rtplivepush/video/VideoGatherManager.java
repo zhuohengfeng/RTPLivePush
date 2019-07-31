@@ -1,4 +1,4 @@
-package com.ryan.rtplivepush.camera;
+package com.ryan.rtplivepush.video;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -7,8 +7,11 @@ import android.hardware.SensorManager;
 import android.widget.Toast;
 
 import com.ryan.rtplivepush.MainApplication;
-import com.ryan.rtplivepush.camera.listener.CameraNVDataListener;
-import com.ryan.rtplivepush.camera.listener.CameraYUVDataListener;
+import com.ryan.rtplivepush.video.camera.CameraSurfaceView;
+import com.ryan.rtplivepush.video.camera.CameraUtil;
+import com.ryan.rtplivepush.video.camera.CameraNVDataListener;
+import com.ryan.rtplivepush.video.camera.CameraYUVDataListener;
+import com.ryan.rtplivepush.rtp.RtpNativeHelper;
 import com.ryan.rtplivepush.utils.Contacts;
 import com.ryan.rtplivepush.utils.FileManager;
 import com.ryan.rtplivepush.utils.SPUtil;
@@ -55,8 +58,8 @@ public class VideoGatherManager implements SensorEventListener, CameraNVDataList
 
         mSensorManager = (SensorManager) MainApplication.getInstance().getSystemService(SENSOR_SERVICE);
         isSupport();
-        StreamProcessManager.init(mCameraUtil.getCameraWidth(), mCameraUtil.getCameraHeight(), scaleWidth, scaleHeight);
-        StreamProcessManager.encoderVideoinit(scaleWidth, scaleHeight, scaleWidth, scaleHeight);
+        RtpNativeHelper.init(mCameraUtil.getCameraWidth(), mCameraUtil.getCameraHeight(), scaleWidth, scaleHeight);
+        RtpNativeHelper.encoderVideoinit(scaleWidth, scaleHeight, scaleWidth, scaleHeight);
 
         initWorkThread();
         loop = true;
@@ -87,7 +90,7 @@ public class VideoGatherManager implements SensorEventListener, CameraNVDataList
         mCameraSurfaceView.releaseCamera();
         mSensorManager.unregisterListener(this);
         loop = false;
-        StreamProcessManager.release();
+        RtpNativeHelper.release();
 
         if (SAVE_FILE_FOR_TEST) {
             fileManager.closeFile();
@@ -104,18 +107,18 @@ public class VideoGatherManager implements SensorEventListener, CameraNVDataList
                         byte[] srcData = mQueue.take();
                         //生成I420(YUV标准格式数据及YUV420P)目标数据，生成后的数据长度width * height * 3 / 2
                         final byte[] dstData = new byte[scaleWidth * scaleHeight * 3 / 2]; // Y=1, U=1/4, V=1/4
-                        final int morientation = mCameraUtil.getMorientation();
+                        final int morientation = mCameraUtil.getOrientation();
                         //压缩NV21(YUV420SP)数据，元素数据位1080 * 1920，很显然这样的数据推流会很占用带宽，我们压缩成480 * 640 的YUV数据
                         //为啥要转化为YUV420P数据？因为是在为转化为H264数据在做准备，NV21不是标准的，只能先通过转换，生成标准YUV420P数据，
                         // NV21是 YYYYYY VU VU VU VU
                         // YUV420P是 YYYYYY UUUUUU VVVVVV
                         //然后把标准数据encode为H264流
-                        StreamProcessManager.compressYUV(srcData, mCameraUtil.getCameraWidth(), mCameraUtil.getCameraHeight(), dstData, scaleHeight, scaleWidth, 0, morientation, morientation == 270);
+                        RtpNativeHelper.compressYUV(srcData, mCameraUtil.getCameraWidth(), mCameraUtil.getCameraHeight(), dstData, scaleHeight, scaleWidth, 0, morientation, morientation == 270);
 
                         //进行YUV420P数据裁剪的操作，测试下这个借口，我们可以对数据进行裁剪，裁剪后的数据也是I420数据，我们采用的是libyuv库文件
                         //这个libyuv库效率非常高，这也是我们用它的原因
                         final byte[] cropData = new byte[cropWidth * cropHeight * 3 / 2];
-                        StreamProcessManager.cropYUV(dstData, scaleWidth, scaleHeight, cropData, cropWidth, cropHeight, cropStartX, cropStartY);
+                        RtpNativeHelper.cropYUV(dstData, scaleWidth, scaleHeight, cropData, cropWidth, cropHeight, cropStartX, cropStartY);
 
                         //自此，我们得到了YUV420P标准数据，这个过程实际上就是NV21转化为YUV420P数据
                         //注意，有些机器是NV12格式，只是数据存储不一样，我们一样可以用libyuv库的接口转化
@@ -153,13 +156,13 @@ public class VideoGatherManager implements SensorEventListener, CameraNVDataList
 //                    //进行yuv数据的缩放，旋转镜像缩放等操作
 //                    //Log.e("RiemannLee", " scaleWidth " + scaleWidth + " scaleHeight " + scaleHeight);
 //                    final byte[] dstData = new byte[scaleWidth * scaleHeight * 3 / 2];
-//                    final int morientation = mCameraUtil.getMorientation();
-//                    StreamProcessManager.compressYUV(srcData, mCameraUtil.getCameraWidth(), mCameraUtil.getCameraHeight(), dstData, scaleHeight, scaleWidth, 0, morientation, morientation == 270);
+//                    final int morientation = mCameraUtil.getOrientation();
+//                    RtpNativeHelper.compressYUV(srcData, mCameraUtil.getCameraWidth(), mCameraUtil.getCameraHeight(), dstData, scaleHeight, scaleWidth, 0, morientation, morientation == 270);
 //
 //                    //进行yuv数据裁剪的操作
 //                    //Log.e("RiemannLee", " cropWidth " + cropWidth + " cropWidth " + cropHeight);
 //                    final byte[] cropData = new byte[cropWidth * cropHeight * 3 / 2];
-//                    StreamProcessManager.cropYUV(dstData, scaleWidth, scaleHeight, cropData, cropWidth, cropHeight, cropStartX, cropStartY);
+//                    RtpNativeHelper.cropYUV(dstData, scaleWidth, scaleHeight, cropData, cropWidth, cropHeight, cropStartX, cropStartY);
 //
 //                    yuvDataListener.onYUVDataReceiver(cropData, cropWidth, cropHeight);
 
@@ -172,7 +175,7 @@ public class VideoGatherManager implements SensorEventListener, CameraNVDataList
 
                     //这里将yuvi420转化为nv21，因为yuvimage只能操作nv21和yv12，为了演示方便，这里做一步转化的操作
 //                    final byte[] nv21Data = new byte[cropWidth * cropHeight * 3 / 2];
-//                    StreamProcessManager.yuvI420ToNV21(cropData, nv21Data, cropWidth, cropHeight);
+//                    RtpNativeHelper.yuvI420ToNV21(cropData, nv21Data, cropWidth, cropHeight);
 //
 //                    //这里采用yuvImage将yuvi420转化为图片，当然用libyuv也是可以做到的，这里主要介绍libyuv的裁剪，旋转，缩放，镜像的操作
 //                    YuvImage yuvImage = new YuvImage(nv21Data, ImageFormat.NV21, cropWidth, cropHeight, null);

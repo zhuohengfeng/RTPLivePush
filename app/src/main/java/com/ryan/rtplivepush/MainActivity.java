@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -12,10 +11,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ryan.rtplivepush.camera.CameraSurfaceView;
-import com.ryan.rtplivepush.camera.VideoGatherManager;
+import com.ryan.rtplivepush.video.camera.CameraSurfaceView;
+import com.ryan.rtplivepush.video.VideoGatherManager;
 import com.ryan.rtplivepush.rtp.MediaPublisher;
-import com.ryan.rtplivepush.rtp.RtpNativeHelper;
 import com.ryan.rtplivepush.utils.Contacts;
 import com.ryan.rtplivepush.utils.PermissionsUtils;
 import com.ryan.rtplivepush.utils.SPUtil;
@@ -23,7 +21,7 @@ import com.ryan.rtplivepush.utils.SPUtil;
 public class MainActivity extends Activity implements View.OnClickListener{
 
     private final int REQUEST_CODE_PERMISSIONS = 10;
-    private VideoGatherManager manager;
+    private VideoGatherManager mVideoGatherManager;
     private CameraSurfaceView mSurfaceView;
     private ImageView mCameraSwitchImageView;
     private ImageView mRtmpPublishImageView;
@@ -47,6 +45,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            // 申请权限
             final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA};
             PermissionsUtils.checkAndRequestMorePermissions(this, PERMISSIONS, REQUEST_CODE_PERMISSIONS,
                     new PermissionsUtils.PermissionRequestSuccessCallBack() {
@@ -60,7 +59,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
         }
         mMediaPublisher = new MediaPublisher();
         mMediaPublisher.setRtmpUrl("rtmp://118.126.107.250:1935/live/room");
-        //mMediaPublisher.setRtmpUrl("rtmp://192.168.0.6:1935/live1/room");
     }
 
     @Override
@@ -90,14 +88,14 @@ public class MainActivity extends Activity implements View.OnClickListener{
         mCameraSwitchImageView.setOnClickListener(this);
         mRtmpPublishImageView.setOnClickListener(this);
         // 不断获取视频数据
-        manager = new VideoGatherManager(mSurfaceView);
+        mVideoGatherManager = new VideoGatherManager(mSurfaceView);
     }
 
     private void initCameraInfo() {
         //摄像头预览设置
         int width = (int) SPUtil.get(Contacts.CAMERA_WIDTH, 0);
         int height = (int) SPUtil.get(Contacts.CAMERA_HEIGHT, 0);
-        int morientation = (int) SPUtil.get(Contacts.CAMERA_Morientation, 0);
+        int morientation = (int) SPUtil.get(Contacts.CAMERA_ORIENTATION, 0);
         cameraInfoTextView.setText(String.format("摄像头预览大小:%d*%d\n旋转的角度:%d度", width, height, morientation));
 
         //缩放大小设置
@@ -115,7 +113,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     public void onClick(View v) {
         if (v == mCameraSwitchImageView) {
             //切换摄像头
-            manager.changeCamera();
+            mVideoGatherManager.changeCamera();
             initCameraInfo();
         } else if (v == mRtmpPublishImageView) {
         }
@@ -124,24 +122,24 @@ public class MainActivity extends Activity implements View.OnClickListener{
     @Override
     protected void onResume() {
         super.onResume();
-        manager.onResume();
+        mVideoGatherManager.onResume();
+        // 初始化相机信息
         initCameraInfo();
-        mMediaPublisher.initVideoGather(manager);
+        mMediaPublisher.initVideoGather(mVideoGatherManager);
         mMediaPublisher.initAudioGather();
-        mMediaPublisher.startGather();
-        mMediaPublisher.startMediaEncoder();
+        mMediaPublisher.startGather(); // 开始收集音频和视频
+        mMediaPublisher.startMediaEncoder(); // 开始音视频的编码
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        //manager.onStop();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        manager.onStop();
+        mVideoGatherManager.onStop();
         mMediaPublisher.stopGather();
         mMediaPublisher.stopMediaEncoder();
         mMediaPublisher.relaseRtmp();

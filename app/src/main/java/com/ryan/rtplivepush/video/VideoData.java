@@ -1,4 +1,4 @@
-package com.ryan.rtplivepush.camera;
+package com.ryan.rtplivepush.video;
 
 public class VideoData {
     public byte[] videoData;

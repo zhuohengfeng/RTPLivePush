@@ -1,7 +1,8 @@
 package com.ryan.rtplivepush.encoder;
 
 import com.ryan.rtplivepush.audio.AudioData;
-import com.ryan.rtplivepush.camera.VideoData;
+import com.ryan.rtplivepush.video.VideoData;
+import com.ryan.rtplivepush.rtp.RtpNativeHelper;
 import com.ryan.rtplivepush.utils.Contacts;
 import com.ryan.rtplivepush.utils.FileManager;
 
@@ -45,7 +46,7 @@ public class MediaEncoder {
         videoQueue = new LinkedBlockingQueue<>();
         audioQueue = new LinkedBlockingQueue<>();
         //这里我们初始化音频数据，为什么要初始化音频数据呢？音频数据里面我们做了什么事情？
-        audioEncodeBuffer = StreamProcessManager.encoderAudioInit(Contacts.SAMPLE_RATE,
+        audioEncodeBuffer = RtpNativeHelper.encoderAudioInit(Contacts.SAMPLE_RATE,
                 Contacts.CHANNELS, Contacts.BIT_RATE);
     }
 
@@ -105,7 +106,7 @@ public class MediaEncoder {
                         byte[] outbuffer = new byte[videoData.width * videoData.height];
                         int[] buffLength = new int[10];
                         //对YUV420P进行h264编码，返回一个数据大小，里面是编码出来的h264数据
-                        int numNals = StreamProcessManager.encoderVideoEncode(videoData.videoData, videoData.videoData.length, fps, outbuffer, buffLength);
+                        int numNals = RtpNativeHelper.encoderVideoEncode(videoData.videoData, videoData.videoData.length, fps, outbuffer, buffLength);
                         //Log.e("RiemannLee", "data.length " +  videoData.videoData.length + " h264 encode length " + buffLength[0]);
                         if (numNals > 0) {
                             int[] segment = new int[numNals];
@@ -162,7 +163,7 @@ public class MediaEncoder {
                             int remain = audioEncodeBuffer - haveCopyLength;
                             if (remain == 0) {
                                 //fdk-aac编码PCM裸音频数据，返回可用长度的有效字段
-                                int validLength = StreamProcessManager.encoderAudioEncode(inbuffer, audioEncodeBuffer, outbuffer, outbuffer.length);
+                                int validLength = RtpNativeHelper.encoderAudioEncode(inbuffer, audioEncodeBuffer, outbuffer, outbuffer.length);
                                 //Log.e("lihuzi", " validLength " + validLength);
                                 final int VALID_LENGTH = validLength;
                                 if (VALID_LENGTH > 0) {

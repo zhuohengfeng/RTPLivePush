@@ -1,4 +1,4 @@
-package com.ryan.rtplivepush.camera;
+package com.ryan.rtplivepush.video.camera;
 
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
@@ -22,10 +22,10 @@ public class CameraUtil {
     /**
      * 摄像头的旋转角度
      **/
-    private int morientation;
+    private int mOrientation;
 
-    public int getMorientation() {
-        return morientation;
+    public int getOrientation() {
+        return mOrientation;
     }
 
     /**
@@ -135,8 +135,8 @@ public class CameraUtil {
         }
 
         //这边是设置旋转的
-        morientation = setCameraDisplayOrientation(cameraId);
-        SPUtil.put(Contacts.CAMERA_Morientation, morientation);
+        mOrientation = setCameraDisplayOrientation(cameraId);
+        SPUtil.put(Contacts.CAMERA_ORIENTATION, mOrientation);
 
         Camera.Parameters parameters = mCamera.getParameters();
         choosePreviewSize(parameters, cameraWidth, cameraHeight);

@@ -1,4 +1,4 @@
-package com.ryan.rtplivepush.camera;
+package com.ryan.rtplivepush.video.camera;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -15,8 +15,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.ryan.rtplivepush.R;
-import com.ryan.rtplivepush.camera.listener.CameraNVDataListener;
-import com.ryan.rtplivepush.camera.listener.CameraSurfaceListener;
 
 @SuppressWarnings("deprecation")
 public class CameraSurfaceView extends FrameLayout implements CameraSurfaceListener, Camera.PreviewCallback, SurfaceHolder.Callback {

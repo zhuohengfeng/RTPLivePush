@@ -4,9 +4,9 @@ import android.util.Log;
 
 import com.ryan.rtplivepush.audio.AudioData;
 import com.ryan.rtplivepush.audio.AudioRecoderManager;
-import com.ryan.rtplivepush.camera.VideoData;
-import com.ryan.rtplivepush.camera.VideoGatherManager;
-import com.ryan.rtplivepush.camera.listener.CameraYUVDataListener;
+import com.ryan.rtplivepush.video.VideoData;
+import com.ryan.rtplivepush.video.VideoGatherManager;
+import com.ryan.rtplivepush.video.camera.CameraYUVDataListener;
 import com.ryan.rtplivepush.encoder.MediaEncoder;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -122,7 +122,7 @@ public class MediaPublisher {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                StreamProcessManager.initRtmpData(url);
+                RtpNativeHelper.initRtmpData(url);
             }
         };
         try {
@@ -136,7 +136,7 @@ public class MediaPublisher {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                StreamProcessManager.releaseRtmp();
+                RtpNativeHelper.releaseRtmp();
             }
         };
         try {
@@ -189,7 +189,7 @@ public class MediaPublisher {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                StreamProcessManager.sendRtmpVideoSpsPPS(sps, spsLen, pps, ppsLen, timeStamp);
+                RtpNativeHelper.sendRtmpVideoSpsPPS(sps, spsLen, pps, ppsLen, timeStamp);
             }
         };
         try {
@@ -203,7 +203,7 @@ public class MediaPublisher {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                StreamProcessManager.sendRtmpVideoData(data, dataLen, timeStamp);
+                RtpNativeHelper.sendRtmpVideoData(data, dataLen, timeStamp);
             }
         };
         try {
@@ -217,7 +217,7 @@ public class MediaPublisher {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                StreamProcessManager.sendRtmpAudioSpec(timeStamp);
+                RtpNativeHelper.sendRtmpAudioSpec(timeStamp);
             }
         };
         try {
@@ -231,7 +231,7 @@ public class MediaPublisher {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                StreamProcessManager.sendRtmpAudioData(data, dataLen, timeStamp);
+                RtpNativeHelper.sendRtmpAudioData(data, dataLen, timeStamp);
             }
         };
         try {
