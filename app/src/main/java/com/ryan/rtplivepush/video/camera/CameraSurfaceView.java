@@ -50,7 +50,7 @@ public class CameraSurfaceView extends FrameLayout implements CameraSurfaceListe
     private void init() {
         View view = View.inflate(getContext(), R.layout.layout_camera, null);
         mSurfaceView = (SurfaceView) view.findViewById(R.id.surface);
-        ivFoucView = (ImageView) view.findViewById(R.id.iv_focus);
+        ivFoucView = (ImageView) view.findViewById(R.id.iv_focus); // 对焦框
         removeAllViews();
         addView(view);
 
@@ -67,12 +67,13 @@ public class CameraSurfaceView extends FrameLayout implements CameraSurfaceListe
     public void onPreviewFrame(byte[] data, Camera camera) {
         camera.addCallbackBuffer(data);
         if (listener != null) {
-            listener.onCallback(data);
+            listener.onNvDataCallback(data);
         }
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        // 开始预览
         mCameraUtil.handleCameraStartPreview(mSurfaceView.getHolder(), this);
     }
 
@@ -85,7 +86,6 @@ public class CameraSurfaceView extends FrameLayout implements CameraSurfaceListe
     public void surfaceDestroyed(SurfaceHolder holder) {
         mCameraUtil.releaseCamera();
     }
-
 
     @Override
     public void openCamera() {

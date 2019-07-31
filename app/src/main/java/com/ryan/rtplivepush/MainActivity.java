@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.ryan.rtplivepush.video.camera.CameraSurfaceView;
 import com.ryan.rtplivepush.video.VideoGatherManager;
-import com.ryan.rtplivepush.rtp.MediaPublisher;
 import com.ryan.rtplivepush.utils.Contacts;
 import com.ryan.rtplivepush.utils.PermissionsUtils;
 import com.ryan.rtplivepush.utils.SPUtil;

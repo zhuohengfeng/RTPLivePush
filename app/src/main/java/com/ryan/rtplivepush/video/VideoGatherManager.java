@@ -141,7 +141,7 @@ public class VideoGatherManager implements SensorEventListener, CameraNVDataList
 
     // 这里接收到相机预览传回来的NV21数据
     @Override
-    public void onCallback(final byte[] srcData) {
+    public void onNvDataCallback(final byte[] srcData) {
         if (srcData != null) {
             try {
                 mQueue.put(srcData);

@@ -1,9 +1,10 @@
-package com.ryan.rtplivepush.rtp;
+package com.ryan.rtplivepush;
 
 import android.util.Log;
 
 import com.ryan.rtplivepush.audio.AudioData;
 import com.ryan.rtplivepush.audio.AudioRecoderManager;
+import com.ryan.rtplivepush.rtp.RtpNativeHelper;
 import com.ryan.rtplivepush.video.VideoData;
 import com.ryan.rtplivepush.video.VideoGatherManager;
 import com.ryan.rtplivepush.video.camera.CameraYUVDataListener;
@@ -11,6 +12,11 @@ import com.ryan.rtplivepush.encoder.MediaEncoder;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * 1. 收集相机YUV和音频PCM数据
+ * 2. 编码成H264和AAC
+ * 3. RTP推流
+ */
 public class MediaPublisher {
     private static final String TAG = "MediaPublisher";
 

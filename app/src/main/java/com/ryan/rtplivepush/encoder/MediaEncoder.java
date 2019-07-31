@@ -89,6 +89,9 @@ public class MediaEncoder {
         audioEncoderThread.interrupt();
     }
 
+    /**
+     * 对YUV数据进行编码成H264压缩格式
+     */
     public void startVideoEncode() {
         if (videoEncoderLoop) {
             throw new RuntimeException("必须先停止");
@@ -139,6 +142,9 @@ public class MediaEncoder {
         videoEncoderThread.start();
     }
 
+    /**
+     * 对PCM数据进行编码成AAC压缩格式
+     */
     public void startAudioEncode() {
         if (audioEncoderLoop) {
             throw new RuntimeException("必须先停止");
