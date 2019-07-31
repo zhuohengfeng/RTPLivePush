@@ -1,10 +1,16 @@
 #include <jni.h>
 #include <string>
 
-extern "C" JNIEXPORT jstring JNICALL
-Java_com_ryan_rtplivepush_MainActivity_stringFromJNI(
-        JNIEnv *env,
-        jobject /* this */) {
-    std::string hello = "Hello from C++";
+#include "AndroidLog.h"
+
+
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_stringFromJNI(JNIEnv *env, jobject instance) {
+
+    // TODO
+    LOGD("stringFromJNI");
+    std::string hello = "Hello from RTP Native C++";
     return env->NewStringUTF(hello.c_str());
 }

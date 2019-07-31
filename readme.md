@@ -1,7 +1,7 @@
 # 使用jrtclib + mediacodec 实现RTP推流
 
 
-### 一，编译jrtclib
+### 一，集成jrtclib
 
 
 
