@@ -8,7 +8,9 @@ add_library(
         SHARED
 
         # 添加编译的源文件
-        ${CMAKE_SOURCE_DIR}/native-lib.cpp)
+        ${CMAKE_SOURCE_DIR}/native-lib.cpp
+        ${CMAKE_SOURCE_DIR}/RtpPush.cpp
+        )
 
 # jrtplib库
 add_library( jrtplib STATIC IMPORTED)

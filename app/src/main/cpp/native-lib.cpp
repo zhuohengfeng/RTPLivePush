@@ -2,7 +2,7 @@
 #include <string>
 
 #include "AndroidLog.h"
-
+#include "RtpPush.h"
 
 extern "C"
 JNIEXPORT jint JNICALL
@@ -10,14 +10,20 @@ Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_init(JNIEnv *env, jclass type, jin
                                                    jint height, jint outWidth, jint outHeight) {
 
     // TODO
+    RtpPush rtpPush;
+    rtpPush.initRtp();
 
-}extern "C"
+}
+
+extern "C"
 JNIEXPORT jint JNICALL
 Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_release(JNIEnv *env, jclass type) {
 
     // TODO
 
-}extern "C"
+}
+
+extern "C"
 JNIEXPORT jint JNICALL
 Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_yuvI420ToNV21(JNIEnv *env, jclass type,
                                                             jbyteArray i420Src_,
@@ -30,7 +36,9 @@ Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_yuvI420ToNV21(JNIEnv *env, jclass 
 
     env->ReleaseByteArrayElements(i420Src_, i420Src, 0);
     env->ReleaseByteArrayElements(nv21Src_, nv21Src, 0);
-}extern "C"
+}
+
+extern "C"
 JNIEXPORT jint JNICALL
 Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_compressYUV(JNIEnv *env, jclass type, jbyteArray src_,
                                                           jint width, jint height, jbyteArray dst_,
@@ -44,7 +52,9 @@ Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_compressYUV(JNIEnv *env, jclass ty
 
     env->ReleaseByteArrayElements(src_, src, 0);
     env->ReleaseByteArrayElements(dst_, dst, 0);
-}extern "C"
+}
+
+extern "C"
 JNIEXPORT jint JNICALL
 Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_cropYUV(JNIEnv *env, jclass type, jbyteArray src_,
                                                       jint width, jint height, jbyteArray dst_,
@@ -57,7 +67,9 @@ Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_cropYUV(JNIEnv *env, jclass type, 
 
     env->ReleaseByteArrayElements(src_, src, 0);
     env->ReleaseByteArrayElements(dst_, dst, 0);
-}extern "C"
+}
+
+extern "C"
 JNIEXPORT jint JNICALL
 Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_encoderVideoinit(JNIEnv *env, jclass type,
                                                                jint in_width, jint in_height,
@@ -65,7 +77,9 @@ Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_encoderVideoinit(JNIEnv *env, jcla
 
     // TODO
 
-}extern "C"
+}
+
+extern "C"
 JNIEXPORT jint JNICALL
 Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_encoderVideoEncode(JNIEnv *env, jclass type,
                                                                  jbyteArray srcFrame_,
@@ -81,7 +95,9 @@ Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_encoderVideoEncode(JNIEnv *env, jc
     env->ReleaseByteArrayElements(srcFrame_, srcFrame, 0);
     env->ReleaseByteArrayElements(dstFrame_, dstFrame, 0);
     env->ReleaseIntArrayElements(outFramewSize_, outFramewSize, 0);
-}extern "C"
+}
+
+extern "C"
 JNIEXPORT jint JNICALL
 Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_encoderAudioInit(JNIEnv *env, jclass type,
                                                                jint sampleRate, jint channels,
@@ -89,7 +105,9 @@ Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_encoderAudioInit(JNIEnv *env, jcla
 
     // TODO
 
-}extern "C"
+}
+
+extern "C"
 JNIEXPORT jint JNICALL
 Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_encoderAudioEncode(JNIEnv *env, jclass type,
                                                                  jbyteArray srcFrame_,
@@ -103,7 +121,9 @@ Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_encoderAudioEncode(JNIEnv *env, jc
 
     env->ReleaseByteArrayElements(srcFrame_, srcFrame, 0);
     env->ReleaseByteArrayElements(dstFrame_, dstFrame, 0);
-}extern "C"
+}
+
+extern "C"
 JNIEXPORT jint JNICALL
 Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_initRtmpData(JNIEnv *env, jclass type, jstring url_) {
     const char *url = env->GetStringUTFChars(url_, 0);
@@ -111,7 +131,9 @@ Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_initRtmpData(JNIEnv *env, jclass t
     // TODO
 
     env->ReleaseStringUTFChars(url_, url);
-}extern "C"
+}
+
+extern "C"
 JNIEXPORT jint JNICALL
 Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_sendRtmpVideoSpsPPS(JNIEnv *env, jclass type,
                                                                   jbyteArray sps_, jint spsLen,
@@ -124,7 +146,9 @@ Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_sendRtmpVideoSpsPPS(JNIEnv *env, j
 
     env->ReleaseByteArrayElements(sps_, sps, 0);
     env->ReleaseByteArrayElements(pps_, pps, 0);
-}extern "C"
+}
+
+extern "C"
 JNIEXPORT jint JNICALL
 Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_sendRtmpVideoData(JNIEnv *env, jclass type,
                                                                 jbyteArray data_, jint dataLen,
@@ -134,14 +158,18 @@ Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_sendRtmpVideoData(JNIEnv *env, jcl
     // TODO
 
     env->ReleaseByteArrayElements(data_, data, 0);
-}extern "C"
+}
+
+extern "C"
 JNIEXPORT jint JNICALL
 Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_sendRtmpAudioSpec(JNIEnv *env, jclass type,
                                                                 jlong timeStamp) {
 
     // TODO
 
-}extern "C"
+}
+
+extern "C"
 JNIEXPORT jint JNICALL
 Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_sendRtmpAudioData(JNIEnv *env, jclass type,
                                                                 jbyteArray data_, jint dataLen,
@@ -151,7 +179,9 @@ Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_sendRtmpAudioData(JNIEnv *env, jcl
     // TODO
 
     env->ReleaseByteArrayElements(data_, data, 0);
-}extern "C"
+}
+
+extern "C"
 JNIEXPORT jint JNICALL
 Java_com_ryan_rtplivepush_rtp_RtpNativeHelper_releaseRtmp(JNIEnv *env, jclass type) {
 
